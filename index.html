@@ -1,0 +1,501 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Etsy Scraper</title>
+<meta name="description" content="Download and install the Etsy Scraper on any Windows PC.">
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>%F0%9F%A7%B2</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap">
+
+<style>
+  :root {
+    --paper:    #F4F5F2;
+    --card:     #FFFFFF;
+    --ink:      #16191A;
+    --ink-soft: #565E5C;
+    --ink-faint:#7C8582;
+    --rule:     #D9DDD7;
+    --accent:   #1F6E5C;
+    --accent-t: #FFFFFF;
+    --accent-w: #E7F0EC;
+    --warn:     #8A5307;
+    --warn-bg:  #FBF2E3;
+    --warn-rule:#E8D3AC;
+    --shadow:   0 1px 2px rgba(22,25,26,.05), 0 8px 24px -12px rgba(22,25,26,.18);
+
+    --display: "Archivo", "Helvetica Neue", Arial, sans-serif;
+    --body:    "Source Serif 4", Georgia, "Times New Roman", serif;
+    --mono:    "IBM Plex Mono", ui-monospace, "Cascadia Mono", Consolas, monospace;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --paper:    #0F1211;
+      --card:     #171B19;
+      --ink:      #E7EAE5;
+      --ink-soft: #9BA5A0;
+      --ink-faint:#78827E;
+      --rule:     #2A302D;
+      --accent:   #57BFA3;
+      --accent-t: #0F1211;
+      --accent-w: #1B2A26;
+      --warn:     #E0B25A;
+      --warn-bg:  #241E12;
+      --warn-rule:#4A3B1D;
+      --shadow:   0 1px 2px rgba(0,0,0,.4), 0 8px 24px -12px rgba(0,0,0,.6);
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --paper:    #0F1211;
+    --card:     #171B19;
+    --ink:      #E7EAE5;
+    --ink-soft: #9BA5A0;
+    --ink-faint:#78827E;
+    --rule:     #2A302D;
+    --accent:   #57BFA3;
+    --accent-t: #0F1211;
+    --accent-w: #1B2A26;
+    --warn:     #E0B25A;
+    --warn-bg:  #241E12;
+    --warn-rule:#4A3B1D;
+    --shadow:   0 1px 2px rgba(0,0,0,.4), 0 8px 24px -12px rgba(0,0,0,.6);
+  }
+
+  * { box-sizing: border-box; }
+
+  html { -webkit-text-size-adjust: 100%; }
+
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--body);
+    font-size: 17px;
+    line-height: 1.65;
+    margin: 0;
+    padding: 0 24px 96px;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .wrap { max-width: 660px; margin: 0 auto; }
+
+  /* ---------- masthead ---------- */
+
+  .masthead { padding: 72px 0 40px; }
+
+  .eyebrow {
+    font-family: var(--display);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: .16em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin: 0 0 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .eyebrow::after { content: ""; flex: 1; height: 1px; background: var(--rule); }
+
+  h1 {
+    font-family: var(--display);
+    font-size: clamp(40px, 8vw, 60px);
+    font-weight: 700;
+    letter-spacing: -.032em;
+    line-height: 1.02;
+    margin: 0 0 20px;
+    text-wrap: balance;
+  }
+
+  .lead {
+    font-size: 20px;
+    line-height: 1.5;
+    color: var(--ink-soft);
+    margin: 0;
+    max-width: 30em;
+    text-wrap: pretty;
+  }
+
+  /* ---------- the download plate ---------- */
+
+  .plate {
+    background: var(--card);
+    border: 1px solid var(--rule);
+    border-radius: 3px;
+    box-shadow: var(--shadow);
+    padding: 32px;
+    margin: 0 0 8px;
+  }
+
+  .filerow {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 8px 12px;
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--ink-soft);
+    padding-bottom: 20px;
+    margin-bottom: 24px;
+    border-bottom: 1px solid var(--rule);
+  }
+  .filerow b { color: var(--ink); font-weight: 500; }
+  .filerow span { color: var(--ink-faint); }
+
+  .btn-download {
+    display: block;
+    width: 100%;
+    padding: 16px 20px;
+    background: var(--accent);
+    color: var(--accent-t);
+    font-family: var(--display);
+    font-size: 16px;
+    font-weight: 600;
+    letter-spacing: -.005em;
+    text-align: center;
+    text-decoration: none;
+    border: 1px solid transparent;
+    border-radius: 2px;
+    transition: background-color .15s ease;
+  }
+  .btn-download:hover { background: var(--ink); }
+  .btn-download:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+
+  .plate-note { font-size: 15px; color: var(--ink-soft); margin: 16px 0 0; }
+
+  .plate-foot {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--ink-faint);
+    margin: 0 0 56px;
+    padding: 10px 2px 0;
+    line-height: 1.6;
+  }
+
+  /* ---------- sections ---------- */
+
+  h2 {
+    font-family: var(--display);
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin: 0 0 28px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  section { margin-bottom: 64px; }
+
+  /* ---------- ordered install steps ---------- */
+
+  ol.steps { list-style: none; margin: 0; padding: 0; }
+
+  ol.steps > li {
+    display: grid;
+    grid-template-columns: 44px 1fr;
+    gap: 0 20px;
+    padding-bottom: 36px;
+    position: relative;
+  }
+  ol.steps > li:last-child { padding-bottom: 0; }
+
+  ol.steps > li:not(:last-child)::before {
+    content: "";
+    position: absolute;
+    left: 21px;
+    top: 40px;
+    bottom: 4px;
+    width: 1px;
+    background: var(--rule);
+  }
+
+  .num {
+    grid-row: span 2;
+    width: 43px;
+    height: 43px;
+    border: 1px solid var(--accent);
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    font-family: var(--display);
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--accent);
+    background: var(--card);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .step-body { padding-top: 8px; min-width: 0; }
+
+  h3 {
+    font-family: var(--display);
+    font-size: 19px;
+    font-weight: 600;
+    letter-spacing: -.012em;
+    margin: 0 0 8px;
+  }
+
+  .step-body p { margin: 0 0 12px; color: var(--ink-soft); }
+  .step-body p:last-child { margin-bottom: 0; }
+  .step-body strong { color: var(--ink); font-weight: 600; }
+
+  code {
+    font-family: var(--mono);
+    font-size: .88em;
+    background: var(--accent-w);
+    color: var(--ink);
+    padding: 2px 5px;
+    border-radius: 2px;
+  }
+
+  .callout {
+    background: var(--warn-bg);
+    border: 1px solid var(--warn-rule);
+    border-radius: 3px;
+    padding: 14px 16px;
+    margin: 14px 0;
+    font-size: 15px;
+    line-height: 1.55;
+    color: var(--ink);
+  }
+  .callout b {
+    font-family: var(--display);
+    font-weight: 600;
+    color: var(--warn);
+    display: block;
+    font-size: 13px;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+
+  /* ---------- spec table ---------- */
+
+  .tablewrap { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: 15px; }
+  th, td {
+    text-align: left;
+    padding: 11px 0;
+    border-bottom: 1px solid var(--rule);
+    vertical-align: baseline;
+  }
+  tr:last-child th, tr:last-child td { border-bottom: 0; }
+  th {
+    font-family: var(--display);
+    font-weight: 500;
+    font-size: 13px;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    width: 40%;
+    padding-right: 16px;
+  }
+  td { color: var(--ink-soft); font-variant-numeric: tabular-nums; }
+
+  /* ---------- disclosures ---------- */
+
+  details { border-bottom: 1px solid var(--rule); }
+  details summary {
+    cursor: pointer;
+    padding: 15px 0;
+    font-family: var(--display);
+    font-weight: 500;
+    font-size: 16px;
+    color: var(--ink);
+    list-style: none;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  details summary::-webkit-details-marker { display: none; }
+  details summary::before {
+    content: "+";
+    font-family: var(--mono);
+    color: var(--accent);
+    font-size: 17px;
+    line-height: 1.4;
+    flex: none;
+  }
+  details[open] summary::before { content: "\2212"; }
+  details summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  details .answer { padding: 0 0 18px 26px; color: var(--ink-soft); font-size: 16px; }
+  details .answer p { margin: 0 0 10px; }
+  details .answer p:last-child { margin-bottom: 0; }
+
+  footer {
+    border-top: 1px solid var(--rule);
+    padding-top: 24px;
+    font-size: 14px;
+    color: var(--ink-faint);
+  }
+  footer p { margin: 0 0 6px; }
+
+  a { color: var(--accent); text-underline-offset: 2px; }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { transition: none !important; animation: none !important; }
+  }
+
+  @media (max-width: 560px) {
+    body { padding: 0 18px 72px; font-size: 16px; }
+    .masthead { padding: 48px 0 32px; }
+    .plate { padding: 22px; }
+    .lead { font-size: 18px; }
+    ol.steps > li { grid-template-columns: 34px 1fr; gap: 0 14px; }
+    ol.steps > li:not(:last-child)::before { left: 16px; top: 38px; }
+    .num { width: 33px; height: 33px; font-size: 13px; }
+    th { width: 45%; }
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <header class="masthead">
+    <p class="eyebrow">Private build</p>
+    <h1>Etsy Scraper</h1>
+    <p class="lead">Pulls every listing out of an Etsy shop — photos, titles, descriptions — rewrites the copy, and packages it for bulk upload. It runs on your own PC, not in the cloud.</p>
+  </header>
+
+  <section>
+    <div class="plate">
+      <div class="filerow">
+        <b>Install-Etsy-Scraper.cmd</b>
+        <span>239 KB</span>
+        <span>Windows 10 &amp; 11</span>
+      </div>
+      <a class="btn-download" href="Install-Etsy-Scraper.cmd" download>Download the installer</a>
+      <p class="plate-note">The whole app is packed inside this one file. Once it is on your PC you do not need this page again, and you do not need the internet except to fetch Node.js and the browser it scrapes with.</p>
+    </div>
+    <p class="plate-foot">One file. Nothing to unzip, nothing to configure.</p>
+  </section>
+
+  <section>
+    <h2>Installing it</h2>
+    <ol class="steps">
+
+      <li>
+        <div class="num">1</div>
+        <div class="step-body">
+          <h3>Download the file</h3>
+          <p>Press the green button above.</p>
+          <div class="callout">
+            <b>Your browser will try to stop you</b>
+            Chrome and Edge distrust every <code>.cmd</code> file on principle, so expect a warning strip along the bottom saying it "isn't commonly downloaded." Choose <strong>Keep</strong> — on Chrome you may need the <strong>⋮</strong> next to the warning, then <strong>Keep anyway</strong>.
+          </div>
+        </div>
+      </li>
+
+      <li>
+        <div class="num">2</div>
+        <div class="step-body">
+          <h3>Double-click it</h3>
+          <p>Open your <strong>Downloads</strong> folder and double-click <code>Install-Etsy-Scraper.cmd</code>.</p>
+          <p>A blue <strong>"Windows protected your PC"</strong> box usually appears the first time. Choose <strong>More info</strong>, then <strong>Run anyway</strong>. That prompt shows up for any program that was not bought from a software company.</p>
+        </div>
+      </li>
+
+      <li>
+        <div class="num">3</div>
+        <div class="step-body">
+          <h3>Leave it alone for about ten minutes</h3>
+          <p>A black window takes over and works through six steps: unpacking the app, installing Node.js if the PC does not already have it, downloading the packages, fetching the browser it scrapes with, writing a settings file, and putting a shortcut on your Desktop.</p>
+          <p>Windows may ask permission partway through — that is the Node.js installer. Say yes. Walls of yellow warning text are normal; only red errors matter.</p>
+        </div>
+      </li>
+
+      <li>
+        <div class="num">4</div>
+        <div class="step-body">
+          <h3>Use it</h3>
+          <p>When it finishes, the app opens by itself. After that, launch it from the <strong>Etsy Scraper</strong> icon on your Desktop.</p>
+          <p>A black console window opens each time and the app appears in your browser at <code>localhost:3000</code>. <strong>Keep the console window open</strong> while you work — closing it shuts the app down.</p>
+        </div>
+      </li>
+
+    </ol>
+  </section>
+
+  <section>
+    <h2>What it needs</h2>
+    <div class="tablewrap">
+      <table>
+        <tr><th>Operating system</th><td>Windows 10 or 11</td></tr>
+        <tr><th>Free disk space</th><td>About 2 GB</td></tr>
+        <tr><th>Install time</th><td>5–15 minutes, mostly downloading</td></tr>
+        <tr><th>Installs for you</th><td>Node.js 22, the app packages, and Chromium</td></tr>
+        <tr><th>Admin rights</th><td>Only if Node.js is missing</td></tr>
+        <tr><th>Where it lands</th><td><code>C:\Users\you\etsy-scraper</code></td></tr>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <h2>Optional: AI rewriting</h2>
+    <p style="margin:0 0 14px;color:var(--ink-soft)">The scraper works fully without this. If you want it to rewrite listing text instead of copying Etsy's wording word-for-word, get a free key from <a href="https://build.nvidia.com" target="_blank" rel="noopener">build.nvidia.com</a>.</p>
+    <p style="margin:0;color:var(--ink-soft)">The installer asks for it near the end — paste it in, or press Enter to skip and add it later in <code>scraper\.env</code>.</p>
+  </section>
+
+  <section>
+    <h2>If something goes wrong</h2>
+
+    <details>
+      <summary>The download was blocked or deleted</summary>
+      <div class="answer">
+        <p>Browsers and antivirus tools treat unsigned <code>.cmd</code> files as suspicious by default. In Chrome, open <code>chrome://downloads</code>, find the file and choose <strong>Keep dangerous file</strong>. In Edge, open the Downloads panel and choose <strong>Keep</strong>.</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>Double-clicking opens Notepad instead of running</summary>
+      <div class="answer">
+        <p>The file was saved as text. Check that the name ends in <code>.cmd</code> and not <code>.cmd.txt</code> — in File Explorer turn on <strong>View → Show → File name extensions</strong> to see the real ending, then rename it.</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>It says the installer looks damaged</summary>
+      <div class="answer">
+        <p>The file did not arrive whole — usually an interrupted download, or a chat app that mangled it on the way. Download it again from this page.</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>Setup stopped partway through</summary>
+      <div class="answer">
+        <p>The real reason sits a few lines above the red message, and a dropped connection is the usual one. Just run it again: every finished step is skipped, so it picks up where it stopped. Your settings and anything already scraped are never overwritten.</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>Nothing happens when I open the Desktop shortcut</summary>
+      <div class="answer">
+        <p>If Node.js was installed during setup, the very first launch can miss it. Close the console window and open the shortcut again.</p>
+        <p>If the app is already running, the shortcut just reopens the browser tab rather than starting a second copy.</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>Etsy is blocking the scraper</summary>
+      <div class="answer">
+        <p>Installing Google Chrome helps — the uploader prefers real Chrome and falls back to a bundled browser. Slowing down and scraping fewer listings per run helps more.</p>
+      </div>
+    </details>
+  </section>
+
+  <footer>
+    <p>A personal tool, shared privately. Not affiliated with Etsy.</p>
+    <p>Nothing is uploaded anywhere: the app, your settings, and everything it scrapes stay on your own machine.</p>
+  </footer>
+
+</div>
+
+</body>
+</html>

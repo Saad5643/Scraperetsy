@@ -1,0 +1,3 @@
+# Never touch line endings - the .cmd payload is byte-sensitive.
+* -text
+*.cmd binary
