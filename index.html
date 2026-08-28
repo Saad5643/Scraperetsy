@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Etsy Scraper</title>
-<meta name="description" content="Download and install the Etsy Scraper on any Windows PC.">
+<meta name="description" content="Download and install the Etsy Scraper on Windows, macOS or Linux.">
 <meta name="robots" content="noindex, nofollow">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>%F0%9F%A7%B2</text></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -129,6 +129,88 @@
     box-shadow: var(--shadow);
     padding: 32px;
     margin: 0 0 8px;
+  }
+
+  /* ---------- OS switcher ---------- */
+
+  .osrow {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 20px;
+    padding: 3px;
+    border: 1px solid var(--rule);
+    border-radius: 3px;
+  }
+
+  .ostab {
+    flex: 1;
+    padding: 8px 10px;
+    background: transparent;
+    border: 0;
+    border-radius: 2px;
+    font-family: var(--display);
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--ink-soft);
+    cursor: pointer;
+    transition: background-color .15s ease, color .15s ease;
+  }
+  .ostab:hover { color: var(--ink); }
+  .ostab[aria-selected="true"] { background: var(--accent); color: var(--accent-t); }
+  .ostab:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+  /* Only the selected system's instructions are shown. Nothing is hidden until
+     the script runs, so the page still reads completely with JS disabled. */
+  .js .os-win, .js .os-mac, .js .os-linux { display: none; }
+  .js[data-os="win"]   .os-win,
+  .js[data-os="mac"]   .os-mac,
+  .js[data-os="linux"] .os-linux { display: revert; }
+
+  /* ---------- copyable command ---------- */
+
+  .cmd {
+    border: 1px solid var(--rule);
+    border-radius: 3px;
+    background: var(--card);
+    margin: 14px 0;
+    overflow: hidden;
+  }
+  .cmd-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 8px 8px 8px 14px;
+    border-bottom: 1px solid var(--rule);
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+  }
+  .btn-copy {
+    padding: 6px 12px;
+    background: transparent;
+    border: 1px solid var(--rule);
+    border-radius: 2px;
+    color: var(--ink-soft);
+    font-family: var(--display);
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: border-color .15s ease, color .15s ease;
+  }
+  .btn-copy:hover { border-color: var(--accent); color: var(--accent); }
+  .btn-copy:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .cmd pre {
+    margin: 0;
+    padding: 14px;
+    overflow-x: auto;
+    font-family: var(--mono);
+    font-size: 13px;
+    line-height: 1.7;
+    color: var(--ink);
+    white-space: pre;
   }
 
   .filerow {
@@ -361,20 +443,26 @@
   <header class="masthead">
     <p class="eyebrow">Private build</p>
     <h1>Etsy Scraper</h1>
-    <p class="lead">Pulls every listing out of an Etsy shop — photos, titles, descriptions — rewrites the copy, and packages it for bulk upload. It runs on your own PC, not in the cloud.</p>
+    <p class="lead">Pulls every listing out of an Etsy shop — photos, titles, descriptions — rewrites the copy, and packages it for bulk upload. It runs on your own machine, not in the cloud.</p>
   </header>
 
   <section>
     <div class="plate">
-      <div class="filerow">
-        <b>Install-Etsy-Scraper.cmd</b>
-        <span>246 KB</span>
-        <span>Windows 10 &amp; 11</span>
+      <div class="osrow" role="tablist" aria-label="Choose your system">
+        <button class="ostab" role="tab" data-os="win" aria-selected="true">Windows</button>
+        <button class="ostab" role="tab" data-os="mac" aria-selected="false">macOS</button>
+        <button class="ostab" role="tab" data-os="linux" aria-selected="false">Linux</button>
       </div>
-      <a class="btn-download" href="Install-Etsy-Scraper.cmd" download>Download the installer</a>
-      <p class="plate-note">The whole app is packed inside this one file. Once it is on your PC you do not need this page again, and you do not need the internet except to fetch Node.js and the browser it scrapes with.</p>
+
+      <div class="filerow">
+        <b id="dl-name">Install-Etsy-Scraper.cmd</b>
+        <span id="dl-size">246 KB</span>
+        <span id="dl-os">Windows 10 &amp; 11</span>
+      </div>
+      <a class="btn-download" id="dl-link" href="Install-Etsy-Scraper.cmd" download>Download the installer</a>
+      <p class="plate-note">The whole app is packed inside this one file. Once it is on your machine you do not need this page again, and you do not need the internet except to fetch Node.js and the browser it scrapes with.</p>
     </div>
-    <p class="plate-foot">One file. Nothing to unzip, nothing to configure.</p>
+    <p class="plate-foot" id="plate-foot">One file. Nothing to unzip, nothing to configure.</p>
   </section>
 
   <section>
@@ -386,19 +474,42 @@
         <div class="step-body">
           <h3>Download the file</h3>
           <p>Press the green button above.</p>
-          <div class="callout">
+          <div class="callout os-win">
             <b>Your browser will try to stop you</b>
             Chrome and Edge distrust every <code>.cmd</code> file on principle, so expect a warning strip along the bottom saying it "isn't commonly downloaded." Choose <strong>Keep</strong> — on Chrome you may need the <strong>⋮</strong> next to the warning, then <strong>Keep anyway</strong>.
           </div>
+          <p class="os-mac os-linux">It lands in your <strong>Downloads</strong> folder. Leave it there — the next step expects it.</p>
         </div>
       </li>
 
       <li>
         <div class="num">2</div>
         <div class="step-body">
-          <h3>Double-click it</h3>
-          <p>Open your <strong>Downloads</strong> folder and double-click <code>Install-Etsy-Scraper.cmd</code>.</p>
-          <p>A blue <strong>"Windows protected your PC"</strong> box usually appears the first time. Choose <strong>More info</strong>, then <strong>Run anyway</strong>. That prompt shows up for any program that was not bought from a software company.</p>
+          <h3 class="os-win">Double-click it</h3>
+          <h3 class="os-mac os-linux">Run it from the Terminal</h3>
+
+          <p class="os-win">Open your <strong>Downloads</strong> folder and double-click <code>Install-Etsy-Scraper.cmd</code>.</p>
+          <p class="os-win">A blue <strong>"Windows protected your PC"</strong> box usually appears the first time. Choose <strong>More info</strong>, then <strong>Run anyway</strong>. That prompt shows up for any program that was not bought from a software company.</p>
+
+          <p class="os-mac">Open <strong>Terminal</strong> — press <strong>⌘ Space</strong>, type <code>terminal</code>, press Enter. Then paste this line and press Enter:</p>
+          <p class="os-linux">Open your <strong>terminal</strong> — on most desktops that is <strong>Ctrl+Alt+T</strong>. Then paste this line and press Enter:</p>
+
+          <div class="cmd os-mac os-linux">
+            <div class="cmd-head">
+              <span>Paste into the terminal</span>
+              <button class="btn-copy" id="copy-cmd" type="button">Copy</button>
+            </div>
+            <pre id="run-cmd">bash ~/Downloads/install-etsy-scraper.sh</pre>
+          </div>
+
+          <div class="callout os-mac">
+            <b>Why the terminal and not a double-click</b>
+            macOS quarantines anything downloaded from the web, so double-clicking it would be refused as coming from an "unidentified developer". Starting it with <code>bash</code> runs the exact same file without that fight, and without needing to change any security settings.
+          </div>
+          <div class="callout os-linux">
+            <b>Why the terminal and not a double-click</b>
+            A downloaded <code>.sh</code> file has no executable permission, so most desktops open it in a text editor instead of running it. Starting it with <code>bash</code> sidesteps that entirely.
+          </div>
         </div>
       </li>
 
@@ -406,8 +517,9 @@
         <div class="num">3</div>
         <div class="step-body">
           <h3>Leave it alone for about ten minutes</h3>
-          <p>A black window takes over and works through six steps: unpacking the app, installing Node.js if the PC does not already have it, downloading the packages, fetching the browser it scrapes with, writing a settings file, and putting a shortcut on your Desktop.</p>
-          <p>Windows may ask permission partway through — that is the Node.js installer. Say yes. Walls of yellow warning text are normal; only red errors matter.</p>
+          <p>It works through six steps: unpacking the app, installing Node.js if this machine does not already have it, downloading the packages, fetching the browser it scrapes with, writing a settings file, and adding a shortcut.</p>
+          <p class="os-win">Windows may ask permission partway through — that is the Node.js installer. Say yes. Walls of yellow warning text are normal; only red errors matter.</p>
+          <p class="os-mac os-linux">It never asks for your password: Node.js is unpacked into the app's own folder rather than installed system-wide, so nothing outside <code>~/etsy-scraper</code> is touched. Walls of yellow warning text are normal; only red errors matter.</p>
         </div>
       </li>
 
@@ -415,8 +527,10 @@
         <div class="num">4</div>
         <div class="step-body">
           <h3>Use it</h3>
-          <p>When it finishes, the app opens by itself. After that, launch it from the <strong>Etsy Scraper</strong> icon on your Desktop.</p>
-          <p>A black console window opens each time and the app appears in your browser at <code>localhost:3000</code>. <strong>Keep the console window open</strong> while you work — closing it shuts the app down.</p>
+          <p class="os-win">When it finishes, the app opens by itself. After that, launch it from the <strong>Etsy Scraper</strong> icon on your Desktop.</p>
+          <p class="os-mac">When it finishes, the app opens by itself. After that, launch <strong>Etsy Scraper</strong> from your <strong>Applications</strong> folder.</p>
+          <p class="os-linux">When it finishes, the app opens by itself. After that, launch <strong>Etsy Scraper</strong> from your applications menu.</p>
+          <p>A console window opens each time and the app appears in your browser at <code>localhost:3000</code>. <strong>Keep that window open</strong> while you work — closing it shuts the app down.</p>
         </div>
       </li>
 
@@ -427,12 +541,22 @@
     <h2>What it needs</h2>
     <div class="tablewrap">
       <table>
-        <tr><th>Operating system</th><td>Windows 10 or 11</td></tr>
+        <tr><th>Operating system</th>
+          <td class="os-win">Windows 10 or 11</td>
+          <td class="os-mac">macOS 11 or newer, Intel or Apple Silicon</td>
+          <td class="os-linux">Any modern 64-bit distro, x64 or ARM</td>
+        </tr>
         <tr><th>Free disk space</th><td>About 2 GB</td></tr>
         <tr><th>Install time</th><td>5–15 minutes, mostly downloading</td></tr>
         <tr><th>Installs for you</th><td>Node.js 22, the app packages, and Chromium</td></tr>
-        <tr><th>Admin rights</th><td>Only if Node.js is missing</td></tr>
-        <tr><th>Where it lands</th><td><code>C:\Users\you\etsy-scraper</code></td></tr>
+        <tr><th>Admin rights</th>
+          <td class="os-win">Only if Node.js is missing</td>
+          <td class="os-mac os-linux">Never — Node.js goes in the app's own folder</td>
+        </tr>
+        <tr><th>Where it lands</th>
+          <td class="os-win"><code>C:\Users\you\etsy-scraper</code></td>
+          <td class="os-mac os-linux"><code>~/etsy-scraper</code></td>
+        </tr>
       </table>
     </div>
   </section>
@@ -446,17 +570,39 @@
   <section>
     <h2>If something goes wrong</h2>
 
-    <details>
+    <details class="os-win">
       <summary>The download was blocked or deleted</summary>
       <div class="answer">
         <p>Browsers and antivirus tools treat unsigned <code>.cmd</code> files as suspicious by default. In Chrome, open <code>chrome://downloads</code>, find the file and choose <strong>Keep dangerous file</strong>. In Edge, open the Downloads panel and choose <strong>Keep</strong>.</p>
       </div>
     </details>
 
-    <details>
+    <details class="os-win">
       <summary>Double-clicking opens Notepad instead of running</summary>
       <div class="answer">
         <p>The file was saved as text. Check that the name ends in <code>.cmd</code> and not <code>.cmd.txt</code> — in File Explorer turn on <strong>View → Show → File name extensions</strong> to see the real ending, then rename it.</p>
+      </div>
+    </details>
+
+    <details class="os-mac os-linux">
+      <summary>"No such file or directory"</summary>
+      <div class="answer">
+        <p>The file is not where the command expects. If your browser saved it somewhere other than <code>~/Downloads</code>, use the real path instead — or drag the file into the terminal window after typing <code>bash</code> and a space, which pastes its path for you.</p>
+      </div>
+    </details>
+
+    <details class="os-mac">
+      <summary>macOS says it cannot be opened</summary>
+      <div class="answer">
+        <p>That is Gatekeeper reacting to a downloaded file, and it only applies to double-clicking. Running it with <code>bash ~/Downloads/install-etsy-scraper.sh</code> as in step 2 avoids it — you do not need to change any security settings.</p>
+      </div>
+    </details>
+
+    <details class="os-linux">
+      <summary>The browser will not start after installing</summary>
+      <div class="answer">
+        <p>Chromium needs a handful of system libraries that only a package manager can install. Run this once, then start the app again:</p>
+        <p><code>cd ~/etsy-scraper/scraper &amp;&amp; sudo npx playwright install-deps chromium</code></p>
       </div>
     </details>
 
@@ -475,7 +621,7 @@
     </details>
 
     <details>
-      <summary>Nothing happens when I open the Desktop shortcut</summary>
+      <summary>Nothing happens when I open the shortcut</summary>
       <div class="answer">
         <p>If Node.js was installed during setup, the very first launch can miss it. Close the console window and open the shortcut again.</p>
         <p>If the app is already running, the shortcut just reopens the browser tab rather than starting a second copy.</p>
@@ -496,6 +642,89 @@
   </footer>
 
 </div>
+
+<script>
+  (function () {
+    "use strict";
+
+    var root = document.documentElement;
+
+    var FILES = {
+      win:   { name: "Install-Etsy-Scraper.cmd",  href: "Install-Etsy-Scraper.cmd",  os: "Windows 10 & 11",  size: "246 KB",  foot: "One file. Nothing to unzip, nothing to configure." },
+      mac:   { name: "install-etsy-scraper.sh",   href: "install-etsy-scraper.sh",   os: "macOS 11+",        size: "215 KB", foot: "One file. No admin password, nothing installed system-wide." },
+      linux: { name: "install-etsy-scraper.sh",   href: "install-etsy-scraper.sh",   os: "Linux 64-bit",     size: "215 KB", foot: "One file. No sudo, nothing installed system-wide." }
+    };
+
+    function detect() {
+      var ua = navigator.userAgent;
+      // iPadOS reports as Macintosh; either way macOS instructions are closest.
+      if (/Mac OS X|Macintosh/i.test(ua)) return "mac";
+      if (/Windows|Win64|Win32/i.test(ua)) return "win";
+      if (/Linux|X11|CrOS/i.test(ua)) return "linux";
+      return "win";
+    }
+
+    function apply(os) {
+      var f = FILES[os] || FILES.win;
+      root.setAttribute("data-os", os);
+
+      document.getElementById("dl-name").textContent = f.name;
+      document.getElementById("dl-size").textContent = f.size;
+      document.getElementById("dl-os").textContent = f.os;
+      document.getElementById("plate-foot").textContent = f.foot;
+
+      var link = document.getElementById("dl-link");
+      link.setAttribute("href", f.href);
+      link.setAttribute("download", "");
+
+      var tabs = document.querySelectorAll(".ostab");
+      for (var i = 0; i < tabs.length; i++) {
+        tabs[i].setAttribute("aria-selected", tabs[i].getAttribute("data-os") === os ? "true" : "false");
+      }
+    }
+
+    // Adding .js here rather than in the markup means a viewer without
+    // JavaScript sees every system's instructions instead of none.
+    root.className += " js";
+
+    var tabs = document.querySelectorAll(".ostab");
+    for (var i = 0; i < tabs.length; i++) {
+      tabs[i].addEventListener("click", function () {
+        apply(this.getAttribute("data-os"));
+      });
+    }
+
+    apply(detect());
+
+    var copyBtn = document.getElementById("copy-cmd");
+    if (copyBtn) {
+      copyBtn.addEventListener("click", function () {
+        var text = document.getElementById("run-cmd").textContent;
+        var done = function () {
+          copyBtn.textContent = "Copied";
+          setTimeout(function () { copyBtn.textContent = "Copy"; }, 2000);
+        };
+        var fallback = function () {
+          var ta = document.createElement("textarea");
+          ta.value = text;
+          ta.setAttribute("readonly", "");
+          ta.style.position = "fixed";
+          ta.style.opacity = "0";
+          document.body.appendChild(ta);
+          ta.select();
+          try { document.execCommand("copy"); done(); }
+          catch (e) { copyBtn.textContent = "Select it"; }
+          document.body.removeChild(ta);
+        };
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(text).then(done, fallback);
+        } else {
+          fallback();
+        }
+      });
+    }
+  })();
+</script>
 
 </body>
 </html>
